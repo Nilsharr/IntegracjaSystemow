@@ -69,4 +69,9 @@ public class MainWindowViewModel : ReactiveObject
             }
         }
     }
+    
+    public void ClearData()
+    {
+        Laptops = new();
+    }
 }
