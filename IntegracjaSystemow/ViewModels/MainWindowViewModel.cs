@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -27,13 +27,13 @@ public class MainWindowViewModel : ReactiveObject
 
     public MainWindowViewModel()
     {
-        OpenFile = ReactiveCommand.CreateFromTask<string>(ImportData);
-        SaveFile = ReactiveCommand.CreateFromTask<string>(ExportData);
+        OpenFile = ReactiveCommand.CreateFromTask<string>(ImportDataFromFile);
+        SaveFile = ReactiveCommand.CreateFromTask<string>(ExportDataToFile);
         ShowOpenFileDialog = new Interaction<string, string[]?>();
         ShowSaveFileDialog = new Interaction<string, string?>();
     }
 
-    public async Task ImportData(string extension)
+    public async Task ImportDataFromFile(string extension)
     {
         var filePaths = await ShowOpenFileDialog.Handle(extension);
         if (filePaths is not null)
@@ -53,7 +53,17 @@ public class MainWindowViewModel : ReactiveObject
         }
     }
 
-    public async Task ExportData(string extension)
+    public async Task ImportDataFromDb()
+    {
+        
+    }
+
+    public async Task ExportDataToDb()
+    {
+        
+    }
+
+    public async Task ExportDataToFile(string extension)
     {
         var filePath = await ShowSaveFileDialog.Handle(extension);
         if (filePath is not null)
@@ -69,7 +79,7 @@ public class MainWindowViewModel : ReactiveObject
             }
         }
     }
-    
+
     public void ClearData()
     {
         Laptops = new();
