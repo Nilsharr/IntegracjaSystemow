@@ -15,11 +15,14 @@
 
     <Grid ColumnDefinitions="*" RowDefinitions="Auto,*" Margin="5">
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-            <Button Margin="10" Content="Wczytaj dane z TXT" Command="{Binding ImportData}" CommandParameter="txt" />
-            <Button Margin="10" Content="Wczytaj dane z XML" Command="{Binding ImportData}" CommandParameter="xml" />
-            <Button Margin="10" Content="Zapisz dane do TXT" Command="{Binding ExportData}"
+            <Button Margin="10" Content="Wczytaj dane z TXT" Command="{Binding ImportDataFromFile}" CommandParameter="txt" />
+            <Button Margin="10" Content="Wczytaj dane z XML" Command="{Binding ImportDataFromFile}" CommandParameter="xml" />
+			<Button Margin="10" Content="Import danych z Bazy Danych" Command="{Binding ImportDataFromDb}" />
+			<Button Margin="10" Content="Eksport danych do Bazy Danych" Command="{Binding ExportDataToDb}"
+                    IsEnabled="{Binding Laptops.Count}" />
+            <Button Margin="10" Content="Zapisz dane do TXT" Command="{Binding ExportDataToFile}"
                     IsEnabled="{Binding Laptops.Count}" CommandParameter="txt" />
-            <Button Margin="10" Content="Zapisz dane do XML" Command="{Binding ExportData}"
+            <Button Margin="10" Content="Zapisz dane do XML" Command="{Binding ExportDataToFile}"
                     IsEnabled="{Binding Laptops.Count}" CommandParameter="xml" />
             <Button Margin="10" Content="Wyczysc" Command="{Binding ClearData}" IsEnabled="{Binding Laptops.Count}"/>
         </StackPanel>
