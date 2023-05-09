@@ -1,5 +1,6 @@
 ﻿using IntegracjaSystemow.Database.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace IntegracjaSystemow.Database.Context;
 
@@ -12,7 +13,9 @@ public sealed class LaptopContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=laptops;User Id=postgres;Password=root;");
+        var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        var connString = configuration.GetConnectionString("LaptopDB");
+        optionsBuilder.UseNpgsql(connString);
     }
 
     public DbSet<Laptop> Laptops { get; set; } = default!;
