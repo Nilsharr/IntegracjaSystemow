@@ -1,8 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:IntegracjaSystemow.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:IntegracjaSystemow.ViewModels"
+        xmlns:converters="clr-namespace:IntegracjaSystemow.Converters"
+        xmlns:models="clr-namespace:IntegracjaSystemow.Models"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="IntegracjaSystemow.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -13,40 +15,66 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
+    <Window.Resources>
+        <converters:RowBackgroundColorConverter x:Key="RowBackgroundColorConverter" />
+    </Window.Resources>
+
     <Grid ColumnDefinitions="*" RowDefinitions="Auto,*" Margin="5">
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-            <Button Margin="10" Content="Wczytaj dane z TXT" Command="{Binding ImportDataFromFile}" CommandParameter="txt" />
-            <Button Margin="10" Content="Wczytaj dane z XML" Command="{Binding ImportDataFromFile}" CommandParameter="xml" />
-			<Button Margin="10" Content="Import danych z Bazy Danych" Command="{Binding ImportDataFromDb}" />
-			<Button Margin="10" Content="Eksport danych do Bazy Danych" Command="{Binding ExportDataToDb}"
+            <Button Margin="10" Content="Wczytaj dane z TXT" Command="{Binding  ImportDataFromFile}"
+                    CommandParameter="txt" />
+            <Button Margin="10" Content="Wczytaj dane z XML" Command="{Binding  ImportDataFromFile}"
+                    CommandParameter="xml" />
+            <Button Margin="10" Content="Import danych z Bazy Danych" Command="{Binding  ImportDataFromDb}" />
+            <Button Margin="10" Content="Eksport danych do Bazy Danych" Command="{Binding  ExportDataToDb}"
                     IsEnabled="{Binding Laptops.Count}" />
-            <Button Margin="10" Content="Zapisz dane do TXT" Command="{Binding ExportDataToFile}"
+            <Button Margin="10" Content="Zapisz dane do TXT" Command="{Binding  ExportDataToFile}"
                     IsEnabled="{Binding Laptops.Count}" CommandParameter="txt" />
-            <Button Margin="10" Content="Zapisz dane do XML" Command="{Binding ExportDataToFile}"
+            <Button Margin="10" Content="Zapisz dane do XML" Command="{Binding  ExportDataToFile}"
                     IsEnabled="{Binding Laptops.Count}" CommandParameter="xml" />
-            <Button Margin="10" Content="Wyczysc" Command="{Binding ClearData}" IsEnabled="{Binding Laptops.Count}"/>
+            <Button Margin="10" Content="Wyczysc" Command="{Binding  ClearData}"
+                    IsEnabled="{Binding Laptops.Count}" />
         </StackPanel>
         <ScrollViewer Grid.Row="1" Grid.Column="0" Margin="0,10,0,10" HorizontalScrollBarVisibility="Auto">
-            <DataGrid Items="{Binding Laptops}" AutoGenerateColumns="False">
+            <DataGrid DataContext="{Binding Laptops}" Items="{Binding}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Producent" Binding="{Binding Producer, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Wielkosc matrycy" Binding="{Binding ScreenDiagonal, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Rozdzielczosc" Binding="{Binding ScreenResolution, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Typ matrycy" Binding="{Binding ScreenSurface, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Czy dotykowy ekran" Binding="{Binding IsTouchScreen, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Procesor" Binding="{Binding Processor, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Liczba rdzeni fizycznych"
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Producent"
+                                        Binding="{Binding Producer, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Wielkosc matrycy"
+                                        Binding="{Binding ScreenDiagonal, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Rozdzielczosc"
+                                        Binding="{Binding ScreenResolution, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Typ matrycy"
+                                        Binding="{Binding ScreenSurface, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Czy dotykowy ekran"
+                                        Binding="{Binding IsTouchScreen, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Procesor"
+                                        Binding="{Binding Processor, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Liczba rdzeni fizycznych"
                                         Binding="{Binding PhysicalCores, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Taktowanie" Binding="{Binding ClockSpeed, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="RAM" Binding="{Binding MemorySize, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Pojemnosc dysku" Binding="{Binding DiskCapacity, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Typ dysku" Binding="{Binding DiskType, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Karta graficzna" Binding="{Binding GraphicCard, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Pamiec karty graficznej"
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Taktowanie"
+                                        Binding="{Binding ClockSpeed, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="RAM"
+                                        Binding="{Binding MemorySize, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Pojemnosc dysku"
+                                        Binding="{Binding DiskCapacity, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Typ dysku"
+                                        Binding="{Binding DiskType, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Karta graficzna"
+                                        Binding="{Binding GraphicCard, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Pamiec karty graficznej"
                                         Binding="{Binding GraphicCardMemory, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="System operacyjny" Binding="{Binding OperatingSystem, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="Naped optyczny" Binding="{Binding PhysicalDriveType, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="System operacyjny"
+                                        Binding="{Binding OperatingSystem, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Naped optyczny"
+                                        Binding="{Binding PhysicalDriveType, Mode=TwoWay}" />
                 </DataGrid.Columns>
+                <DataGrid.Styles>
+                    <Style Selector="DataGridCell" x:DataType="models:Laptop">
+                        <Setter Property="Background"
+                                Value="{Binding RowStatus, Converter={StaticResource RowBackgroundColorConverter}}" />
+                    </Style>
+                </DataGrid.Styles>
             </DataGrid>
         </ScrollViewer>
     </Grid>

@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -43,24 +45,18 @@ public class MainWindowViewModel : ReactiveObject
                 switch (extension)
                 {
                     case "txt":
-                        Laptops.AddRange(DataUtils.ReadTxtFile(path));
+                        var txtLaptops = DataUtils.ReadTxtFile(path);
+                        SetDuplicates(txtLaptops);
+                        Laptops.AddRange(txtLaptops);
                         break;
                     case "xml":
-                        Laptops.AddRange(DataUtils.ReadXmlFile(path));
+                        var xmlLaptops = DataUtils.ReadXmlFile(path);
+                        SetDuplicates(xmlLaptops);
+                        Laptops.AddRange(xmlLaptops);
                         break;
                 }
             }
         }
-    }
-
-    public async Task ImportDataFromDb()
-    {
-        
-    }
-
-    public async Task ExportDataToDb()
-    {
-        
     }
 
     public async Task ExportDataToFile(string extension)
@@ -80,8 +76,48 @@ public class MainWindowViewModel : ReactiveObject
         }
     }
 
+    public async Task ImportDataFromDb()
+    {
+        var laptops = await DataUtils.ReadFromDatabase();
+        SetDuplicates(laptops);
+        Laptops.AddRange(laptops);
+    }
+
+    public async Task ExportDataToDb()
+    {
+        await DataUtils.SaveToDatabase(Laptops);
+    }
+
     public void ClearData()
     {
         Laptops = new();
+    }
+
+    private void SetDuplicates(ICollection<Laptop> newLaptops)
+    {
+        var duplicates = 0;
+
+        foreach (var newLaptop in newLaptops)
+        {
+            if (Laptops.Any(laptop => laptop.EqualsValue(newLaptop)))
+            {
+                duplicates++;
+                newLaptop.RowStatus = RowStatus.Duplicated;
+            }
+            else
+            {
+                newLaptop.RowStatus = RowStatus.NotEdited;
+            }
+        }
+
+        ShowAddedRecordsDialog(duplicates, newLaptops.Count - duplicates);
+    }
+
+    private static void ShowAddedRecordsDialog(int duplicates, int newRecords)
+    {
+        var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow("New records",
+                $"Added {duplicates + newRecords} rows ({duplicates} duplicates, {newRecords} new records). ");
+        messageBoxStandardWindow.Show();
     }
 }

@@ -5,11 +5,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using IntegracjaSystemow.Models;
+using AutoMapper;
+using IntegracjaSystemow.Database.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace IntegracjaSystemow.Utils;
 
-public class DataUtils
+public static class DataUtils
 {
+    private static readonly IMapper Mapper;
+
+    static DataUtils()
+    {
+        Mapper = new Mapper(new MapperConfiguration(cfg =>
+        {
+            cfg.CreateMap<Database.Entities.Laptop, Laptop>();
+            cfg.CreateMap<Laptop, Database.Entities.Laptop>();
+        }));
+    }
+
     public static IEnumerable<ProducerCount> CountProducers(IEnumerable<Laptop> laptops)
     {
         if (laptops is null)
@@ -21,7 +35,7 @@ public class DataUtils
             {Producer = group.Key.Capitalize(), Count = group.Count()});
     }
 
-    public static IEnumerable<Laptop> ReadTxtFile(string filePath, string delimiter = ";")
+    public static IList<Laptop> ReadTxtFile(string filePath, string delimiter = ";")
     {
         if (!File.Exists(filePath))
         {
@@ -67,11 +81,11 @@ public class DataUtils
         }
     }
 
-    public static IEnumerable<Laptop> ReadXmlFile(string filePath)
+    public static IList<Laptop> ReadXmlFile(string filePath)
     {
         if (!File.Exists(filePath))
         {
-            throw new FileNotFoundException($"Text file not found at path: {filePath}");
+            throw new FileNotFoundException($"Xml file not found at path: {filePath}");
         }
 
         var xmlLaptops = XDocument.Load(filePath);
@@ -112,5 +126,41 @@ public class DataUtils
         }
     }
 
-    public static int? ParseNullableInt(string? value) => int.TryParse(value, out var result) ? result : default(int?);
+    public static async Task<IList<Laptop>> ReadFromDatabase()
+    {
+        await using var dbContext = new LaptopContext();
+        return Mapper.Map<IList<Laptop>>(await dbContext.Laptops.ToListAsync());
+    }
+
+    public static async Task SaveToDatabase(IEnumerable<Laptop> data)
+    {
+        await using var dbContext = new LaptopContext();
+
+        foreach (var laptop in data.Where(x => x.RowStatus != RowStatus.Duplicated))
+        {
+            // kekw
+            if (!dbContext.Laptops.Any(l => l.Producer == laptop.Producer
+                                            && l.ScreenDiagonal == laptop.ScreenDiagonal
+                                            && l.ScreenResolution == laptop.ScreenResolution
+                                            && l.ScreenSurface == laptop.ScreenSurface
+                                            && l.IsTouchScreen == laptop.IsTouchScreen
+                                            && l.Processor == laptop.Processor
+                                            && l.PhysicalCores == laptop.PhysicalCores
+                                            && l.ClockSpeed == laptop.ClockSpeed
+                                            && l.MemorySize == laptop.MemorySize
+                                            && l.DiskCapacity == laptop.DiskCapacity
+                                            && l.DiskType == laptop.DiskType
+                                            && l.GraphicCard == laptop.GraphicCard
+                                            && l.GraphicCardMemory == laptop.GraphicCardMemory
+                                            && l.OperatingSystem == laptop.OperatingSystem
+                                            && l.PhysicalDriveType == laptop.PhysicalDriveType))
+            {
+                dbContext.Laptops.Add(Mapper.Map<Database.Entities.Laptop>(laptop));
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static int? ParseNullableInt(string? value) => int.TryParse(value, out var result) ? result : default(int?);
 }
