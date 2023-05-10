@@ -45,14 +45,10 @@ public class MainWindowViewModel : ReactiveObject
                 switch (extension)
                 {
                     case "txt":
-                        var txtLaptops = DataUtils.ReadTxtFile(path);
-                        SetDuplicates(txtLaptops);
-                        Laptops.AddRange(txtLaptops);
+                        AddItemsWithoutDuplicates(DataUtils.ReadTxtFile(path));
                         break;
                     case "xml":
-                        var xmlLaptops = DataUtils.ReadXmlFile(path);
-                        SetDuplicates(xmlLaptops);
-                        Laptops.AddRange(xmlLaptops);
+                        AddItemsWithoutDuplicates(DataUtils.ReadXmlFile(path));
                         break;
                 }
             }
@@ -79,8 +75,7 @@ public class MainWindowViewModel : ReactiveObject
     public async Task ImportDataFromDb()
     {
         var laptops = await DataUtils.ReadFromDatabase();
-        SetDuplicates(laptops);
-        Laptops.AddRange(laptops);
+        AddItemsWithoutDuplicates(laptops);
     }
 
     public async Task ExportDataToDb()
@@ -93,24 +88,25 @@ public class MainWindowViewModel : ReactiveObject
         Laptops = new();
     }
 
-    private void SetDuplicates(ICollection<Laptop> newLaptops)
+    private void AddItemsWithoutDuplicates(ICollection<Laptop> newLaptops)
     {
-        var duplicates = 0;
-
+        var withoutDuplicates = new List<Laptop>();
         foreach (var newLaptop in newLaptops)
         {
-            if (Laptops.Any(laptop => laptop.EqualsValue(newLaptop)))
+            var existingLaptop = Laptops.FirstOrDefault(x => x.EqualsValue(newLaptop));
+            if (existingLaptop is null)
             {
-                duplicates++;
-                newLaptop.RowStatus = RowStatus.Duplicated;
+                newLaptop.RowStatus = RowStatus.NotEdited;
+                withoutDuplicates.Add(newLaptop);
             }
             else
             {
-                newLaptop.RowStatus = RowStatus.NotEdited;
+                existingLaptop.RowStatus = RowStatus.Duplicated;
             }
         }
 
-        ShowAddedRecordsDialog(duplicates, newLaptops.Count - duplicates);
+        Laptops.AddRange(withoutDuplicates);
+        ShowAddedRecordsDialog(newLaptops.Count - withoutDuplicates.Count, withoutDuplicates.Count);
     }
 
     private static void ShowAddedRecordsDialog(int duplicates, int newRecords)
