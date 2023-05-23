@@ -13,8 +13,8 @@ public sealed class LaptopContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        var connString = configuration.GetConnectionString("LaptopDB");
+        var configuration = new ConfigurationBuilder().AddJsonFile("settings.json").Build();
+        var connString = configuration.GetConnectionString("Postgres");
         optionsBuilder.UseNpgsql(connString);
     }
 

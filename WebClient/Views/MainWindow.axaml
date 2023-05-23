@@ -1,0 +1,96 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:WebClient.ViewModels"
+        xmlns:models="clr-namespace:WebClient.Models"
+        xmlns:e="clr-namespace:EventBinder;assembly=EventBinder.Avalonia" Name="Wnd"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="WebClient.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Integracja Systemow - Grzegorz Rozek">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Grid ColumnDefinitions="*" RowDefinitions="Auto,*" Margin="5">
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+            <TextBlock Margin="10, 15, 2, 0" Text="Wybór producenta:" />
+            <ComboBox Margin="2, 9, 10, 5" x:Name="ProducersComboBox" Items="{Binding Producers}"
+                      SelectionChanged="{e:EventBinding OnProducerSelectionChanged, $0}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding }" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock Margin="10, 15, 2, 0" Text="Liczba laptopów producenta:" />
+            <TextBlock Margin="2,15, 10, 0" Text="{Binding AmountOfLaptopsByProducer}" />
+
+            <TextBlock Margin="10, 15, 2, 0" Text="Wybór rozdzielczości:" />
+            <ComboBox Margin="2, 9, 10, 5" x:Name="ScreenResolutionsComboBox" Items="{Binding ScreenResolutions}"
+                      SelectionChanged="{e:EventBinding OnScreenResolutionSelectionChanged, $0}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding }" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock Margin="10, 15, 2, 0" Text="Liczba laptopów z rozdzielczością:" />
+            <TextBlock Margin="2, 15, 10, 0" Text="{Binding AmountOfLaptopsByScreenResolution}" />
+
+            <TextBlock Margin="10, 15, 2, 0" Text="Wybór matrycy:" />
+            <ComboBox Margin="2, 9, 10, 5" x:Name="ScreenSurfacesComboBox" Items="{Binding ScreenSurfaces}"
+                      SelectionChanged="{e:EventBinding OnScreenSurfaceSelectionChanged, $0}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding }" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <Button Margin="10" Content="Wszystkie" Command="{Binding  GetAll}" />
+            <Button Margin="10" Content="Wyczysc" Command="{Binding  ClearData}"
+                    IsEnabled="{Binding Laptops.Count}" />
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" Grid.Column="0" Margin="0,10,0,10" HorizontalScrollBarVisibility="Auto">
+            <DataGrid DataContext="{Binding Laptops}" Items="{Binding}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Producent"
+                                        Binding="{Binding Producer, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Wielkosc matrycy"
+                                        Binding="{Binding ScreenDiagonal, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Rozdzielczosc"
+                                        Binding="{Binding ScreenResolution, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Typ matrycy"
+                                        Binding="{Binding ScreenSurface, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Czy dotykowy ekran"
+                                        Binding="{Binding IsTouchScreen, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Procesor"
+                                        Binding="{Binding Processor, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Liczba rdzeni fizycznych"
+                                        Binding="{Binding PhysicalCores, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Taktowanie"
+                                        Binding="{Binding ClockSpeed, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="RAM"
+                                        Binding="{Binding MemorySize, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Pojemnosc dysku"
+                                        Binding="{Binding DiskCapacity, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Typ dysku"
+                                        Binding="{Binding DiskType, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Karta graficzna"
+                                        Binding="{Binding GraphicCard, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Pamiec karty graficznej"
+                                        Binding="{Binding GraphicCardMemory, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="System operacyjny"
+                                        Binding="{Binding OperatingSystem, Mode=TwoWay}" />
+                    <DataGridTextColumn x:DataType="models:Laptop" Header="Naped optyczny"
+                                        Binding="{Binding PhysicalDriveType, Mode=TwoWay}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </ScrollViewer>
+    </Grid>
+
+</Window>

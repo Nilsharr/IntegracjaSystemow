@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegracjaSystemow", "IntegracjaSystemow\IntegracjaSystemow.csproj", "{607EE43D-C2A2-4EF6-8D16-8144DB340DD6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoapServer", "SoapServer\SoapServer.csproj", "{DDB9DB95-D615-4EA1-B316-50550CB78044}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient", "WebClient\WebClient.csproj", "{87B73912-691A-4C7E-BE9A-7F603428CA81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{607EE43D-C2A2-4EF6-8D16-8144DB340DD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{607EE43D-C2A2-4EF6-8D16-8144DB340DD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{607EE43D-C2A2-4EF6-8D16-8144DB340DD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDB9DB95-D615-4EA1-B316-50550CB78044}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDB9DB95-D615-4EA1-B316-50550CB78044}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDB9DB95-D615-4EA1-B316-50550CB78044}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDB9DB95-D615-4EA1-B316-50550CB78044}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87B73912-691A-4C7E-BE9A-7F603428CA81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87B73912-691A-4C7E-BE9A-7F603428CA81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87B73912-691A-4C7E-BE9A-7F603428CA81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87B73912-691A-4C7E-BE9A-7F603428CA81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
