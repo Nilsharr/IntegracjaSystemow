@@ -63,7 +63,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        var useRest = false;
+        var useRest = true;
         if (useRest)
         {
             _apiMethods = new RestService();
