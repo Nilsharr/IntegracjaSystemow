@@ -15,7 +15,7 @@ public class RestService : IApiMethods
 
     public RestService()
     {
-        var options = new RestClientOptions("https://localhost:7278/api/laptops");
+        var options = new RestClientOptions("http://localhost:5172/api/laptops");
         _client = new RestClient(options);
     }
 

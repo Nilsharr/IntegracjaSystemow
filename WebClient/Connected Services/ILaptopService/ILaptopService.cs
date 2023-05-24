@@ -408,7 +408,7 @@ namespace WebClient.ILaptopService
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
         }
         
-        public new virtual System.Threading.Tasks.Task CloseAsync()
+        public virtual System.Threading.Tasks.Task CloseAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginClose(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndClose));
         }
@@ -422,7 +422,6 @@ namespace WebClient.ILaptopService
                 result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
                 result.MaxReceivedMessageSize = int.MaxValue;
                 result.AllowCookies = true;
-                result.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
                 return result;
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
@@ -432,7 +431,7 @@ namespace WebClient.ILaptopService
         {
             if ((endpointConfiguration == EndpointConfiguration.BasicHttpBinding_ILaptopService))
             {
-                return new System.ServiceModel.EndpointAddress("https://localhost:7150/LaptopService.asmx");
+                return new System.ServiceModel.EndpointAddress("http://localhost:5099/LaptopService.asmx");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
