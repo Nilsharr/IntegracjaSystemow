@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using DynamicData;
 using ReactiveUI;
-using WebClient.ILaptopService;
+using WebClient.Interfaces;
+using WebClient.Services;
 using Laptop = WebClient.Models.Laptop;
 
 namespace WebClient.ViewModels;
@@ -61,77 +59,45 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _amountOfLaptopsByScreenResolution, value);
     }
 
+    private readonly IApiMethods _apiMethods;
+
     public MainWindowViewModel()
     {
+        var useRest = false;
+        if (useRest)
+        {
+            _apiMethods = new RestService();
+        }
+        else
+        {
+            _apiMethods = new SoapService();
+        }
+
         RxApp.MainThreadScheduler.Schedule(LoadComboBoxes);
     }
 
     public async Task OnProducerSelectionChanged(object? sender)
     {
         var producer = (sender as ComboBox)?.SelectedItem?.ToString();
-
-        await using var client = new LaptopServiceClient();
-        try
-        {
-            var amountOfLaptops = await client.GetAmountOfLaptopsByProducerAsync(producer);
-            AmountOfLaptopsByProducer = amountOfLaptops;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
+        AmountOfLaptopsByProducer = await _apiMethods.GetAmountOfLaptopsByProducer(producer!);
     }
 
     public async void OnScreenResolutionSelectionChanged(object? sender)
     {
         var screenResolution = (sender as ComboBox)?.SelectedItem?.ToString();
-
-        await using var client = new LaptopServiceClient();
-        try
-        {
-            var amountOfLaptops = await client.GetAmountOfLaptopsByScreenResolutionAsync(screenResolution);
-            AmountOfLaptopsByScreenResolution = amountOfLaptops;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
+        AmountOfLaptopsByScreenResolution = await _apiMethods.GetAmountOfLaptopsByScreenResolution(screenResolution!);
     }
 
     public async void OnScreenSurfaceSelectionChanged(object? sender)
     {
         var screenSurface = (sender as ComboBox)?.SelectedItem?.ToString();
 
-        await using var client = new LaptopServiceClient();
-        try
-        {
-            var laptops = await client.GetLaptopsByScreenSurfaceAsync(screenSurface);
-            if (laptops is not null)
-            {
-                Laptops = new ObservableCollection<Laptop>(laptops.Select(item => new Laptop(item)));
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
+        Laptops = new ObservableCollection<Laptop>(await _apiMethods.GetLaptopsByScreenSurface(screenSurface!));
     }
 
     public async Task GetAll()
     {
-        await using var client = new LaptopServiceClient();
-        try
-        {
-            var laptops = await client.GetAllLaptopsAsync();
-            if (laptops is not null)
-            {
-                Laptops.AddRange(laptops.Select(item => new Laptop(item)).ToList());
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
+        Laptops = new ObservableCollection<Laptop>(await _apiMethods.GetAllLaptops());
     }
 
     public void ClearData()
@@ -141,59 +107,8 @@ public class MainWindowViewModel : ViewModelBase
 
     private async void LoadComboBoxes()
     {
-        await SetProducers();
-        await SetScreenSurfaces();
-        await SetScreenResolutions();
-    }
-
-    private async Task SetProducers()
-    {
-        await using var client = new LaptopServiceClient();
-        try
-        {
-            var producers = await client.GetProducersAsync();
-            if (producers is not null)
-            {
-                Producers = new ObservableCollection<string>(producers);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
-    }
-
-    private async Task SetScreenSurfaces()
-    {
-        await using var client = new LaptopServiceClient();
-        try
-        {
-            var screenSurfaces = await client.GetScreenSurfacesAsync();
-            if (screenSurfaces is not null)
-            {
-                ScreenSurfaces = new ObservableCollection<string>(screenSurfaces);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
-    }
-
-    private async Task SetScreenResolutions()
-    {
-        await using var client = new LaptopServiceClient();
-        try
-        {
-            var screenResolutions = await client.GetScreenResolutionsAsync();
-            if (screenResolutions is not null)
-            {
-                ScreenResolutions = new ObservableCollection<string>(screenResolutions);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
+        Producers = new ObservableCollection<string>(await _apiMethods.GetProducers());
+        ScreenSurfaces = new ObservableCollection<string>(await _apiMethods.GetScreenSurfaces());
+        ScreenResolutions = new ObservableCollection<string>(await _apiMethods.GetScreenResolutions());
     }
 }

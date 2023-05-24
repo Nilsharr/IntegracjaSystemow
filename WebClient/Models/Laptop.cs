@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using WebClient.Dto;
 
 namespace WebClient.Models;
 
 public class Laptop : INotifyPropertyChanged
 {
+    public int Id { get; set; }
     private string _producer = default!;
 
     public string Producer
@@ -233,6 +235,25 @@ public class Laptop : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public Laptop(ILaptopService.Laptop laptop)
+    {
+        Producer = laptop.Producer;
+        ScreenDiagonal = laptop.ScreenDiagonal;
+        ScreenResolution = laptop.ScreenResolution;
+        ScreenSurface = laptop.ScreenSurface;
+        IsTouchScreen = laptop.IsTouchScreen;
+        Processor = laptop.Processor;
+        PhysicalCores = laptop.PhysicalCores;
+        ClockSpeed = laptop.ClockSpeed;
+        MemorySize = laptop.MemorySize;
+        DiskCapacity = laptop.DiskCapacity;
+        DiskType = laptop.DiskType;
+        GraphicCard = laptop.GraphicCard;
+        GraphicCardMemory = laptop.GraphicCardMemory;
+        OperatingSystem = laptop.OperatingSystem;
+        PhysicalDriveType = laptop.PhysicalDriveType;
+    }
+
+    public Laptop(LaptopDto laptop)
     {
         Producer = laptop.Producer;
         ScreenDiagonal = laptop.ScreenDiagonal;
