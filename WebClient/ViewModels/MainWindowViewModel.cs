@@ -63,7 +63,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        var useRest = true;
+        var useRest = false;
         if (useRest)
         {
             _apiMethods = new RestService();
@@ -72,8 +72,6 @@ public class MainWindowViewModel : ViewModelBase
         {
             _apiMethods = new SoapService();
         }
-
-        RxApp.MainThreadScheduler.Schedule(LoadComboBoxes);
     }
 
     public async Task OnProducerSelectionChanged(object? sender)
@@ -82,17 +80,32 @@ public class MainWindowViewModel : ViewModelBase
         AmountOfLaptopsByProducer = await _apiMethods.GetAmountOfLaptopsByProducer(producer!);
     }
 
-    public async void OnScreenResolutionSelectionChanged(object? sender)
+    public async Task OnScreenResolutionSelectionChanged(object? sender)
     {
         var screenResolution = (sender as ComboBox)?.SelectedItem?.ToString();
         AmountOfLaptopsByScreenResolution = await _apiMethods.GetAmountOfLaptopsByScreenResolution(screenResolution!);
     }
 
-    public async void OnScreenSurfaceSelectionChanged(object? sender)
+    public async Task OnScreenSurfaceSelectionChanged(object? sender)
     {
         var screenSurface = (sender as ComboBox)?.SelectedItem?.ToString();
 
         Laptops = new ObservableCollection<Laptop>(await _apiMethods.GetLaptopsByScreenSurface(screenSurface!));
+    }
+
+    public async void OnProducerTapped()
+    {
+        Producers = new ObservableCollection<string>(await _apiMethods.GetProducers());
+    }
+
+    public async void OnScreenResolutionTapped()
+    {
+        ScreenResolutions = new ObservableCollection<string>(await _apiMethods.GetScreenResolutions());
+    }
+
+    public async void OnScreenSurfaceTapped()
+    {
+        ScreenSurfaces = new ObservableCollection<string>(await _apiMethods.GetScreenSurfaces());
     }
 
     public async Task GetAll()
@@ -103,12 +116,5 @@ public class MainWindowViewModel : ViewModelBase
     public void ClearData()
     {
         Laptops = new();
-    }
-
-    private async void LoadComboBoxes()
-    {
-        Producers = new ObservableCollection<string>(await _apiMethods.GetProducers());
-        ScreenSurfaces = new ObservableCollection<string>(await _apiMethods.GetScreenSurfaces());
-        ScreenResolutions = new ObservableCollection<string>(await _apiMethods.GetScreenResolutions());
     }
 }

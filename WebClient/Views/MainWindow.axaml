@@ -19,7 +19,8 @@
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
             <TextBlock Margin="10, 15, 2, 0" Text="Wybór producenta:" />
             <ComboBox Margin="2, 9, 10, 5" x:Name="ProducersComboBox" Items="{Binding Producers}"
-                      SelectionChanged="{e:EventBinding OnProducerSelectionChanged, $0}">
+                      SelectionChanged="{e:EventBinding OnProducerSelectionChanged, $0}"
+                      Tapped="{e:EventBinding OnProducerTapped}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding }" />
@@ -31,7 +32,8 @@
 
             <TextBlock Margin="10, 15, 2, 0" Text="Wybór rozdzielczości:" />
             <ComboBox Margin="2, 9, 10, 5" x:Name="ScreenResolutionsComboBox" Items="{Binding ScreenResolutions}"
-                      SelectionChanged="{e:EventBinding OnScreenResolutionSelectionChanged, $0}">
+                      SelectionChanged="{e:EventBinding OnScreenResolutionSelectionChanged, $0}"
+                      Tapped="{e:EventBinding OnScreenResolutionTapped}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding }" />
@@ -43,7 +45,8 @@
 
             <TextBlock Margin="10, 15, 2, 0" Text="Wybór matrycy:" />
             <ComboBox Margin="2, 9, 10, 5" x:Name="ScreenSurfacesComboBox" Items="{Binding ScreenSurfaces}"
-                      SelectionChanged="{e:EventBinding OnScreenSurfaceSelectionChanged, $0}">
+                      SelectionChanged="{e:EventBinding OnScreenSurfaceSelectionChanged, $0}"
+                      Tapped="{e:EventBinding OnScreenSurfaceTapped}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding }" />
