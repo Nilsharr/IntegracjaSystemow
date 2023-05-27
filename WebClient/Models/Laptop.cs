@@ -234,6 +234,10 @@ public class Laptop : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    public Laptop()
+    {
+    }
+
     public Laptop(ILaptopService.Laptop laptop)
     {
         Producer = laptop.Producer;
@@ -255,6 +259,7 @@ public class Laptop : INotifyPropertyChanged
 
     public Laptop(LaptopDto laptop)
     {
+        Id = laptop.Id;
         Producer = laptop.Producer;
         ScreenDiagonal = laptop.ScreenDiagonal;
         ScreenResolution = laptop.ScreenResolution;

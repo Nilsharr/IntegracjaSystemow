@@ -15,7 +15,7 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid ColumnDefinitions="*" RowDefinitions="Auto,*" Margin="5">
+    <Grid ColumnDefinitions="*" RowDefinitions="Auto, Auto,*" Margin="5">
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
             <TextBlock Margin="10, 15, 2, 0" Text="Wybór producenta:" />
             <ComboBox Margin="2, 9, 10, 5" x:Name="ProducersComboBox" Items="{Binding Producers}"
@@ -58,8 +58,20 @@
             <Button Margin="10" Content="Wyczysc" Command="{Binding  ClearData}"
                     IsEnabled="{Binding Laptops.Count}" />
         </StackPanel>
-        <ScrollViewer Grid.Row="1" Grid.Column="0" Margin="0,10,0,10" HorizontalScrollBarVisibility="Auto">
-            <DataGrid DataContext="{Binding Laptops}" Items="{Binding}" AutoGenerateColumns="False">
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" IsVisible="{Binding UseRestApi}">
+            <Button Margin="10" Content="Dodaj" Command="{Binding  AddRow}" />
+            <Button Margin="10" Content="Zapisz" Command="{Binding  AddLaptop}"
+                    IsEnabled="{Binding IsLaptopSelected}" />
+            <Button Margin="10" Content="Edytuj" Command="{Binding  UpdateLaptop}"
+                    IsEnabled="{Binding IsLaptopSelected}" />
+            <Button Margin="10" Content="Usun" Command="{Binding  DeleteLaptop}"
+                    IsEnabled="{Binding IsLaptopSelected}" />
+            <Button Margin="10" Content="Odznacz" Command="{Binding  DeselectLaptop}"
+                    IsEnabled="{Binding IsLaptopSelected}" />
+        </StackPanel>
+        <ScrollViewer Grid.Row="2" Grid.Column="0" Margin="0,10,0,10" HorizontalScrollBarVisibility="Auto">
+            <DataGrid Items="{Binding Laptops}" AutoGenerateColumns="False"
+                      SelectedItem="{Binding SelectedLaptop, Mode=TwoWay}">
                 <DataGrid.Columns>
                     <DataGridTextColumn x:DataType="models:Laptop" Header="Producent"
                                         Binding="{Binding Producer, Mode=TwoWay}" />

@@ -4,5 +4,5 @@ public enum RowStatus
 {
     NotEdited,
     Edited,
-    Duplicated,
+    Duplicated
 }

@@ -13,4 +13,7 @@ public interface IApiMethods
     Task<IEnumerable<Laptop>> GetLaptopsByScreenSurface(string screenSurface);
     Task<IEnumerable<string>> GetScreenResolutions();
     Task<int?> GetAmountOfLaptopsByScreenResolution(string screenResolution);
+    Task<Laptop?> AddLaptop(Laptop laptop);
+    Task<Laptop?> UpdateLaptop(int id, Laptop laptop);
+    Task DeleteLaptop(int id);
 }

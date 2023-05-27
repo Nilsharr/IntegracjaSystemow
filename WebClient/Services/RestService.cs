@@ -9,7 +9,7 @@ using WebClient.Models;
 
 namespace WebClient.Services;
 
-public class RestService : IApiMethods
+public class RestService : IApiMethods, IDisposable
 {
     private readonly RestClient _client;
 
@@ -121,5 +121,53 @@ public class RestService : IApiMethods
             Console.WriteLine(ex.ToString());
             return null;
         }
+    }
+
+    public async Task<Laptop?> AddLaptop(Laptop laptop)
+    {
+        try
+        {
+            var request = new RestRequest("").AddJsonBody(laptop);
+            var added = await _client.PostAsync<LaptopDto>(request);
+            return new Laptop(added!);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            return null;
+        }
+    }
+
+    public async Task<Laptop?> UpdateLaptop(int id, Laptop laptop)
+    {
+        try
+        {
+            var request = new RestRequest($"{id}").AddJsonBody(laptop);
+            var updated = await _client.PutAsync<LaptopDto>(request);
+            return new Laptop(updated!);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            return null;
+        }
+    }
+
+    public async Task DeleteLaptop(int id)
+    {
+        try
+        {
+            var request = new RestRequest($"{id}");
+            await _client.DeleteAsync(request);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
+    public void Dispose()
+    {
+        _client.Dispose();
     }
 }

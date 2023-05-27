@@ -28,4 +28,28 @@ public class Laptop : IEntityTypeConfiguration<Laptop>
         builder.Property(x => x.Producer).IsRequired();
         builder.Property(x => x.IsTouchScreen).IsRequired();
     }
+
+    public Laptop()
+    {
+    }
+
+    public Laptop(Dto.LaptopDto laptop)
+    {
+        Id = laptop.Id;
+        Producer = laptop.Producer;
+        ScreenDiagonal = laptop.ScreenDiagonal;
+        ScreenResolution = laptop.ScreenResolution;
+        ScreenSurface = laptop.ScreenSurface;
+        IsTouchScreen = laptop.IsTouchScreen;
+        Processor = laptop.Processor;
+        PhysicalCores = laptop.PhysicalCores;
+        ClockSpeed = laptop.ClockSpeed;
+        MemorySize = laptop.MemorySize;
+        DiskCapacity = laptop.DiskCapacity;
+        DiskType = laptop.DiskType;
+        GraphicCard = laptop.GraphicCard;
+        GraphicCardMemory = laptop.GraphicCardMemory;
+        OperatingSystem = laptop.OperatingSystem;
+        PhysicalDriveType = laptop.PhysicalDriveType;
+    }
 }

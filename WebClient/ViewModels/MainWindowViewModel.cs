@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using ReactiveUI;
@@ -18,6 +18,17 @@ public class MainWindowViewModel : ViewModelBase
         get => _laptops;
         set => this.RaiseAndSetIfChanged(ref _laptops, value);
     }
+
+    private Laptop? _selectedLaptop;
+
+    public Laptop? SelectedLaptop
+    {
+        get => _selectedLaptop;
+        set => this.RaiseAndSetIfChanged(ref _selectedLaptop, value);
+    }
+
+    private readonly ObservableAsPropertyHelper<bool> _isLaptopSelected;
+    public bool IsLaptopSelected => _isLaptopSelected.Value;
 
     private ObservableCollection<string> _producers = new();
 
@@ -59,12 +70,16 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _amountOfLaptopsByScreenResolution, value);
     }
 
+    public bool UseRestApi { get; set; } = false;
+
     private readonly IApiMethods _apiMethods;
 
     public MainWindowViewModel()
     {
-        var useRest = false;
-        if (useRest)
+        _isLaptopSelected = this.WhenAnyValue(x => x.SelectedLaptop).Select(x => x is not null)
+            .ToProperty(this, x => x.IsLaptopSelected);
+
+        if (UseRestApi)
         {
             _apiMethods = new RestService();
         }
@@ -72,6 +87,21 @@ public class MainWindowViewModel : ViewModelBase
         {
             _apiMethods = new SoapService();
         }
+    }
+
+    public async Task OnProducerTapped()
+    {
+        Producers = new ObservableCollection<string>(await _apiMethods.GetProducers());
+    }
+
+    public async Task OnScreenResolutionTapped()
+    {
+        ScreenResolutions = new ObservableCollection<string>(await _apiMethods.GetScreenResolutions());
+    }
+
+    public async Task OnScreenSurfaceTapped()
+    {
+        ScreenSurfaces = new ObservableCollection<string>(await _apiMethods.GetScreenSurfaces());
     }
 
     public async Task OnProducerSelectionChanged(object? sender)
@@ -93,21 +123,6 @@ public class MainWindowViewModel : ViewModelBase
         Laptops = new ObservableCollection<Laptop>(await _apiMethods.GetLaptopsByScreenSurface(screenSurface!));
     }
 
-    public async void OnProducerTapped()
-    {
-        Producers = new ObservableCollection<string>(await _apiMethods.GetProducers());
-    }
-
-    public async void OnScreenResolutionTapped()
-    {
-        ScreenResolutions = new ObservableCollection<string>(await _apiMethods.GetScreenResolutions());
-    }
-
-    public async void OnScreenSurfaceTapped()
-    {
-        ScreenSurfaces = new ObservableCollection<string>(await _apiMethods.GetScreenSurfaces());
-    }
-
     public async Task GetAll()
     {
         Laptops = new ObservableCollection<Laptop>(await _apiMethods.GetAllLaptops());
@@ -116,5 +131,45 @@ public class MainWindowViewModel : ViewModelBase
     public void ClearData()
     {
         Laptops = new();
+    }
+
+    public void AddRow()
+    {
+        Laptops.Add(new Laptop {Producer = "Producent"});
+    }
+
+    public async Task AddLaptop()
+    {
+        if (SelectedLaptop is not null && SelectedLaptop.Id == 0)
+        {
+            await _apiMethods.AddLaptop(SelectedLaptop);
+        }
+
+        await GetAll();
+    }
+
+    public async Task UpdateLaptop()
+    {
+        if (SelectedLaptop is not null && SelectedLaptop.Id != 0)
+        {
+            await _apiMethods.UpdateLaptop(SelectedLaptop.Id, SelectedLaptop);
+        }
+
+        await GetAll();
+    }
+
+    public async Task DeleteLaptop()
+    {
+        if (SelectedLaptop is not null && SelectedLaptop.Id != 0)
+        {
+            await _apiMethods.DeleteLaptop(SelectedLaptop.Id);
+        }
+
+        await GetAll();
+    }
+
+    public void DeselectLaptop()
+    {
+        SelectedLaptop = null;
     }
 }

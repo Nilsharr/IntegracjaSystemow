@@ -10,12 +10,18 @@ namespace WebClient.Services;
 
 public class SoapService : IApiMethods
 {
+    private readonly LaptopServiceClient _client;
+
+    public SoapService()
+    {
+        _client = new LaptopServiceClient();
+    }
+
     public async Task<IEnumerable<Laptop>> GetAllLaptops()
     {
-        await using var client = new LaptopServiceClient();
         try
         {
-            var laptops = await client.GetAllLaptopsAsync();
+            var laptops = await _client.GetAllLaptopsAsync();
             return laptops.Select(item => new Laptop(item)).ToList();
         }
         catch (Exception ex)
@@ -27,10 +33,9 @@ public class SoapService : IApiMethods
 
     public async Task<IEnumerable<string>> GetProducers()
     {
-        await using var client = new LaptopServiceClient();
         try
         {
-            var producers = await client.GetProducersAsync();
+            var producers = await _client.GetProducersAsync();
             return producers ?? Array.Empty<string>();
         }
         catch (Exception ex)
@@ -42,10 +47,9 @@ public class SoapService : IApiMethods
 
     public async Task<int?> GetAmountOfLaptopsByProducer(string producer)
     {
-        await using var client = new LaptopServiceClient();
         try
         {
-            return await client.GetAmountOfLaptopsByProducerAsync(producer);
+            return await _client.GetAmountOfLaptopsByProducerAsync(producer);
         }
         catch (Exception ex)
         {
@@ -56,10 +60,9 @@ public class SoapService : IApiMethods
 
     public async Task<IEnumerable<string>> GetScreenSurfaces()
     {
-        await using var client = new LaptopServiceClient();
         try
         {
-            var screenSurfaces = await client.GetScreenSurfacesAsync();
+            var screenSurfaces = await _client.GetScreenSurfacesAsync();
             return screenSurfaces ?? Array.Empty<string>();
         }
         catch (Exception ex)
@@ -71,10 +74,9 @@ public class SoapService : IApiMethods
 
     public async Task<IEnumerable<Laptop>> GetLaptopsByScreenSurface(string screenSurface)
     {
-        await using var client = new LaptopServiceClient();
         try
         {
-            var laptops = await client.GetLaptopsByScreenSurfaceAsync(screenSurface);
+            var laptops = await _client.GetLaptopsByScreenSurfaceAsync(screenSurface);
             return laptops.Select(item => new Laptop(item));
         }
         catch (Exception ex)
@@ -86,10 +88,9 @@ public class SoapService : IApiMethods
 
     public async Task<IEnumerable<string>> GetScreenResolutions()
     {
-        await using var client = new LaptopServiceClient();
         try
         {
-            var screenResolutions = await client.GetScreenResolutionsAsync();
+            var screenResolutions = await _client.GetScreenResolutionsAsync();
             return screenResolutions ?? Array.Empty<string>();
         }
         catch (Exception ex)
@@ -101,15 +102,29 @@ public class SoapService : IApiMethods
 
     public async Task<int?> GetAmountOfLaptopsByScreenResolution(string screenResolution)
     {
-        await using var client = new LaptopServiceClient();
         try
         {
-            return await client.GetAmountOfLaptopsByScreenResolutionAsync(screenResolution);
+            return await _client.GetAmountOfLaptopsByScreenResolutionAsync(screenResolution);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
             return null;
         }
+    }
+
+    public Task<Laptop?> AddLaptop(Laptop laptop)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Laptop?> UpdateLaptop(int id, Laptop laptop)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteLaptop(int id)
+    {
+        throw new NotImplementedException();
     }
 }

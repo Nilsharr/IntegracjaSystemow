@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestServer.Database.Context;
+using RestServer.Database.Entities;
 using RestServer.Dto;
+using Z.EntityFramework.Plus;
 
 // ReSharper disable SpecifyStringComparison
 
@@ -69,5 +71,43 @@ public class LaptopsController : ControllerBase
         var amountByProducer = await _laptopDbContext.Laptops.CountAsync(x =>
             x.ScreenResolution != null && x.ScreenResolution.ToLower() == screenResolution.ToLower());
         return Ok(amountByProducer);
+    }
+
+    [HttpPost("")]
+    public async Task<ActionResult<LaptopDto>> AddLaptop(LaptopDto laptop)
+    {
+        if (laptop.Id != 0)
+        {
+            return BadRequest();
+        }
+
+        var entity = _laptopDbContext.Laptops.Add(new Laptop(laptop)).Entity;
+        await _laptopDbContext.SaveChangesAsync();
+        return Ok(new LaptopDto(entity));
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<LaptopDto>> UpdateLaptop(int id, LaptopDto laptop)
+    {
+        if (laptop.Id != id)
+        {
+            return BadRequest();
+        }
+
+        if (!await _laptopDbContext.Laptops.AnyAsync(x => x.Id == laptop.Id))
+        {
+            return NotFound();
+        }
+
+        var entity = _laptopDbContext.Laptops.Update(new Laptop(laptop)).Entity;
+        await _laptopDbContext.SaveChangesAsync();
+        return Ok(new LaptopDto(entity));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteLaptop(int id)
+    {
+        await _laptopDbContext.Laptops.Where(x => x.Id == id).DeleteAsync();
+        return NoContent();
     }
 }
